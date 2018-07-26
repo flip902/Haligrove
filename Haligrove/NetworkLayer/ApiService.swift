@@ -33,7 +33,7 @@ class ApiService {
                     print("Failed: ", jsonErr)
                 }
             }
-            }.resume()
+        }.resume()
     }
 }
 

@@ -107,7 +107,7 @@ class Popover: NSObject, UITextFieldDelegate {
             priceLabel.textAlignment = .center
             priceLabel.font = Font(.installed(.bakersfieldBold), size: .custom(28)).instance
             guard let textEntry = popoverTextField.text else { return }
-            priceLabel.text = "Price: \(calculatePrice(entry: textEntry))"
+            priceLabel.text = "Price: $\(Int(calculatePrice(entry: textEntry)))"
             
             let stackView = UIStackView(arrangedSubviews: [howManyLabel, productNameLabel, likeToOrderLabel])
             stackView.axis = .vertical
@@ -190,8 +190,10 @@ class Popover: NSObject, UITextFieldDelegate {
         print("Added \(cartItem.qty) grams of \(cartItem.name) with a price of $\(cartItem.price) to Cart")
         
         // TODO: - Submit order to Cart
-        // TODO: - add CartItem to CartManager.itemsArray
+        CartManager.instance.addItem(item: cartItem)
+        
         // TODO: - dismiss popover and animate into Cart
+        
         // TODO: - display item badge in Cart tab
         
     }
@@ -239,7 +241,7 @@ class Popover: NSObject, UITextFieldDelegate {
     
     @objc func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else { return }
-        priceLabel.text = "Price: \(calculatePrice(entry: text))"
+        priceLabel.text = "Price: $\(Int(calculatePrice(entry: text)))"
         let isValid = text.count > 0
         if isValid {
             submitButton.isEnabled = true

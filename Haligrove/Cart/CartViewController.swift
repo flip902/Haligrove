@@ -14,20 +14,56 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     let cartIdentifier = "cartIdentifier"
     
     // TODO: - Set attributes on properties and add them to UI
-    var emptyView = UIView()
     var totalCostsLabel = UILabel()
-    lazy var submitButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.addTarget(self, action: #selector(submitButtonPressed), for: .touchUpInside)
+    
+    var emptyView: UIView = {
+        let defaultView = UIView()
+        defaultView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        return defaultView
+    }()
+    
+    let defaultLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.font = Font(.installed(.bakersfieldBold), size: .custom(18.0)).instance
+        label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        label.textAlignment = .center
+        
+        let imageSize = CGRect(x: 0, y: -5, width: 30, height: 30)
+        let addToCartButtonImage = UIImage(named: "buy")
+        let imageAttachment = NSTextAttachment()
+        imageAttachment.image = addToCartButtonImage
+        imageAttachment.bounds = imageSize
+        let completeText = NSMutableAttributedString(string: "")
+        let textBeforeImage = NSMutableAttributedString(string: "Press the")
+        let attachmentImageString = NSAttributedString(attachment: imageAttachment)
+        let textAfterImage = NSMutableAttributedString(string: " button in the product foldout to add items to Cart")
+        completeText.append(textBeforeImage)
+        completeText.append(attachmentImageString)
+        completeText.append(textAfterImage)
+        
+         label.attributedText = completeText
+        
+        
+        return label
+    }()
+    
+    lazy var submitButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(title: "Submit", style: .plain, target: self, action: #selector(submitButtonPressed))
+        let font = Font(.installed(.bakersfieldLight), size: .custom(18)).instance
+        button.setTitleTextAttributes([NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): font], for: .disabled)
         return button
     }()
     
     lazy var clearButton: UIBarButtonItem = {
         let button = UIBarButtonItem(title: "Clear All", style: .plain, target: self, action: #selector(clearAllButtonPressed))
+        let font = Font(.installed(.bakersfieldLight), size: .custom(18)).instance
+        button.setTitleTextAttributes([NSAttributedStringKey(rawValue: NSAttributedStringKey.font.rawValue): font], for: .disabled)
         return button
     }()
     
     let cartTableFooterView: UIView = {
+        // TODO: - Put total in here?
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         return view
@@ -39,6 +75,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         navigationController?.navigationBar.tintColor = .gray
         navigationController?.navigationBar.barStyle = .black
+        navigationItem.rightBarButtonItem = submitButton
+        navigationItem.leftBarButtonItem = clearButton
     }
     
     func setupTableView() {
@@ -52,6 +90,10 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartTableView?.dataSource = self
         view.addSubview(cartTableView)
         cartTableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, right: view.safeAreaLayoutGuide.rightAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0, width: 0, height: 0)
+        emptyView.addSubview(defaultLabel)
+        view.addSubview(emptyView)
+        emptyView.anchor(top: view.safeAreaLayoutGuide.topAnchor, right: view.safeAreaLayoutGuide.rightAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0, width: 0, height: 0)
+        defaultLabel.anchor(top: emptyView.topAnchor, right: emptyView.rightAnchor, bottom: emptyView.bottomAnchor, left: emptyView.leftAnchor, paddingTop: 0, paddingRight: 16, paddingBottom: 0, paddingLeft: 16, width: 0, height: 0)
     }
     
     // Number Formatter
@@ -86,9 +128,12 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         emptyView.isHidden = !visible
         if visible {
             clearButton.isEnabled = false
+            submitButton.isEnabled = false
             self.view.bringSubview(toFront: emptyView)
+            
         } else {
             clearButton.isEnabled = true
+            submitButton.isEnabled = true
             self.view.sendSubview(toBack: emptyView)
         }
     }
@@ -141,7 +186,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkEmptyStateOfCart()
-        cartTableView.reloadData()
+        cartTableView.reloadWithAnimation()
         updateTotalCostsLabel()
     }
     
