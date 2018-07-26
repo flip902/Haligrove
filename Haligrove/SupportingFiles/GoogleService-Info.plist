@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>441741706634-7m519smm7hbq2kst6l9ebqgc6kvmul32.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.441741706634-7m519smm7hbq2kst6l9ebqgc6kvmul32</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAaQHgGajbKwYpVu8UcUxmR5ZCBIepKKcI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>441741706634</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.haligrove.Haligrove</string>
+	<key>PROJECT_ID</key>
+	<string>haligrove-4aedc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>haligrove-4aedc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:441741706634:ios:cb74018c36989516</string>
+	<key>DATABASE_URL</key>
+	<string>https://haligrove-4aedc.firebaseio.com</string>
+</dict>
+</plist>
