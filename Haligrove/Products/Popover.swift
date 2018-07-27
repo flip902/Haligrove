@@ -51,6 +51,7 @@ class Popover: NSObject, UITextFieldDelegate {
     // MARK: - Object Methods
     func showPopover(product: Product) {
         // TODO: - Refactor this Massive Method
+        submitButton.isEnabled = false
         self.product = product
         if let window = UIApplication.shared.keyWindow {
             fadeView.backgroundColor = UIColor(white: 0, alpha: 0.75)
@@ -102,6 +103,7 @@ class Popover: NSObject, UITextFieldDelegate {
             popoverTextField.rightViewMode = .always
             popoverTextField.adjustsFontSizeToFitWidth = true
             popoverTextField.addTarget(self, action: #selector(Popover.textFieldDidChange(_:)), for: UIControlEvents.editingChanged)
+            
             
             priceLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             priceLabel.textAlignment = .center
@@ -191,11 +193,31 @@ class Popover: NSObject, UITextFieldDelegate {
         
         // TODO: - Submit order to Cart
         CartManager.instance.addItem(item: cartItem)
-        
-        // TODO: - dismiss popover and animate into Cart
-        
-        // TODO: - display item badge in Cart tab
-        
+        animatePopoverIntoCart()
+    }
+    
+    func animatePopoverIntoCart() {
+        popoverView.endEditing(true)
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+            if let window = UIApplication.shared.keyWindow {
+                self.popoverView.transform = CGAffineTransform(scaleX: 2, y: 2)
+                self.popoverView.frame = CGRect(x: (window.frame.maxX - 150) - 40, y: (window.frame.height) - 200, width: 300, height: 300)
+                self.popoverView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+                self.fadeView.alpha = 0
+            }
+        }) { (_) in
+            self.popoverView.removeFromSuperview()
+            self.fadeView.removeFromSuperview()
+            self.popoverTextField.text = ""
+            if let window = UIApplication.shared.keyWindow {
+                self.popoverView.transform = CGAffineTransform(scaleX: 1, y: 1)
+                self.popoverView.frame = CGRect(x: window.center.x - 150, y: window.frame.height, width: (300), height: (300))
+            }
+            
+            let badgeValue = CartManager.instance.numberOfItemsInCart()
+            UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
+            UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = String(badgeValue)
+        }
     }
     
     // MARK: - Init
@@ -217,6 +239,8 @@ class Popover: NSObject, UITextFieldDelegate {
     @objc func keyboardWillDisappear(_ notification: NSNotification) {
         if ((notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
             self.popoverView.frame.origin.y += (100)
+            popoverTextField.isUserInteractionEnabled = true
+            
         }
     }
     
@@ -239,7 +263,13 @@ class Popover: NSObject, UITextFieldDelegate {
         return true
     }
     
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        popoverTextField.isUserInteractionEnabled = false
+        return true
+    }
+    
     @objc func textFieldDidChange(_ textField: UITextField) {
+        
         guard let text = textField.text else { return }
         priceLabel.text = "Price: $\(Int(calculatePrice(entry: text)))"
         let isValid = text.count > 0

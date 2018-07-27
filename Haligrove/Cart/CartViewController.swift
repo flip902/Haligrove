@@ -13,9 +13,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     var cartTableView: UITableView!
     let cartIdentifier = "cartIdentifier"
     
-    // TODO: - Set attributes on properties and add them to UI
-    var totalCostsLabel = UILabel()
-    
     var emptyView: UIView = {
         let defaultView = UIView()
         defaultView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
@@ -41,10 +38,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         completeText.append(textBeforeImage)
         completeText.append(attachmentImageString)
         completeText.append(textAfterImage)
-        
-         label.attributedText = completeText
-        
-        
+        label.attributedText = completeText
         return label
     }()
     
@@ -63,10 +57,18 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }()
     
     let cartTableFooterView: UIView = {
-        // TODO: - Put total in here?
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         return view
+    }()
+    
+    // TODO: - Fix label bouncing when cell is deleted
+    var totalCostsLabel: UILabel = {
+        let label = UILabel()
+        label.font = Font(.installed(.bakersfieldBold), size: .custom(32.0)).instance
+        label.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        label.textAlignment = .right
+        return label
     }()
     
     // MARK: - Class Methods
@@ -84,8 +86,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartTableView.tableFooterView = cartTableFooterView
         cartTableView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         cartTableView?.register(CartCell.self, forCellReuseIdentifier: cartIdentifier)
-        cartTableView.estimatedRowHeight = 100
-        cartTableView.rowHeight = UITableViewAutomaticDimension
+        cartTableView.rowHeight = 100
         cartTableView?.delegate = self
         cartTableView?.dataSource = self
         view.addSubview(cartTableView)
@@ -94,6 +95,8 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         view.addSubview(emptyView)
         emptyView.anchor(top: view.safeAreaLayoutGuide.topAnchor, right: view.safeAreaLayoutGuide.rightAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, left: view.safeAreaLayoutGuide.leftAnchor, paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0, width: 0, height: 0)
         defaultLabel.anchor(top: emptyView.topAnchor, right: emptyView.rightAnchor, bottom: emptyView.bottomAnchor, left: emptyView.leftAnchor, paddingTop: 0, paddingRight: 16, paddingBottom: 0, paddingLeft: 16, width: 0, height: 0)
+        cartTableFooterView.addSubview(totalCostsLabel)
+        totalCostsLabel.anchor(top: cartTableFooterView.topAnchor, right: cartTableFooterView.rightAnchor, bottom: cartTableFooterView.bottomAnchor, left: cartTableFooterView.leftAnchor, paddingTop: 8, paddingRight: 8, paddingBottom: 0, paddingLeft: 0, width: 0, height: 0)
     }
     
     // Number Formatter
@@ -121,6 +124,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     func clearCart() {
         CartManager.instance.clearCart()
         cartTableView.reloadData()
+        UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = nil
         setEmptyViewVisible(true)
     }
     
@@ -130,6 +134,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             clearButton.isEnabled = false
             submitButton.isEnabled = false
             self.view.bringSubview(toFront: emptyView)
+            self.tabBarItem.badgeValue = nil
             
         } else {
             clearButton.isEnabled = true
@@ -139,7 +144,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func updateTotalCostsLabel() {
-        totalCostsLabel.text = itemPriceFormatter.string(from: NSNumber(value: CartManager.instance.totalPriceInCart()))
+        totalCostsLabel.text = "Total: \(itemPriceFormatter.string(from: NSNumber(value: CartManager.instance.totalPriceInCart())) ?? "")"
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -151,8 +156,14 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         let item = CartManager.instance.itemAtIndexPath(indexPath: indexPath)
         cell.itemNameLabel.text = item.name
         cell.itemPriceLabel.text = itemPriceFormatter.string(from: NSNumber(value: item.price))
+        cell.itemCount.text = String(item.qty)
+        tableView.separatorStyle = .none
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -167,9 +178,36 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 tableView.beginUpdates()
                 tableView.deleteRows(at: [indexPath], with: .right)
                 tableView.endUpdates()
+                if CartManager.instance.numberOfItemsInCart() == 0 {
+                    UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = nil
+                } else {
+                    UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = String(CartManager.instance.numberOfItemsInCart())
+                }
             }
             checkEmptyStateOfCart()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteButton = UITableViewRowAction(style: .normal, title: "Delete") { (action, indexPath) in
+            tableView.dataSource?.tableView!(tableView, commit: .delete, forRowAt: indexPath)
+            return
+        }
+        deleteButton.backgroundColor = #colorLiteral(red: 0.521568656, green: 0.1098039225, blue: 0.05098039284, alpha: 1)
+        return [deleteButton]
+    }
+    
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        updateTotalCostsLabel()
+        tableView.reloadData()
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return cartTableFooterView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 100
     }
     
     func checkEmptyStateOfCart() {
@@ -187,6 +225,10 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewWillAppear(animated)
         checkEmptyStateOfCart()
         cartTableView.reloadWithAnimation()
+        cartTableFooterView.alpha = 0
+        UIView.animate(withDuration: 1.3) {
+            self.cartTableFooterView.alpha = 1
+        }
         updateTotalCostsLabel()
     }
     
