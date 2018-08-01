@@ -44,7 +44,7 @@ class MainTabBarController: UITabBarController {
         let infoNavController = templateController(title: "Info", image: #imageLiteral(resourceName: "about"))
         
         // Sales
-        let salesNavController = templateController(title: "Sales", image: #imageLiteral(resourceName: "money"))
+        let salesNavController = templateController(for: SalesViewController(collectionViewLayout: UICollectionViewFlowLayout()), title: "Sales", image: #imageLiteral(resourceName: "money"))
         
         // Cart
         let cartNavController = templateController(for: CartViewController(), title: "Cart", image: #imageLiteral(resourceName: "shopping_cart"))

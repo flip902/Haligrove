@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 
-// TODO: - TapGestureRecognizer to add to Cart
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     // MARK: - Property Declarations
@@ -200,7 +199,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         favoritesCollectionView.addGestureRecognizer(longPressGesture)
         
-        // TODO: - add tap gester recognizer
         newArrivalsCollectionView.register(NewArrivalsCell.self, forCellWithReuseIdentifier: newArrivalsCellIdentifier)
         newArrivalsCollectionView.delegate = self
         newArrivalsCollectionView.dataSource = self
@@ -406,4 +404,24 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         return 8
     }
     
+    // Display Popover
+    let popover = Popover()
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch collectionView {
+        case self.favoritesCollectionView:
+            let cell = collectionView.cellForItem(at: indexPath) as! FavoritesCell
+            popover.showPopover(product: cell.product)
+        case self.newArrivalsCollectionView:
+            let cell = collectionView.cellForItem(at: indexPath) as! NewArrivalsCell
+            popover.showPopover(product: cell.product)
+        case self.specialsCollectionView:
+            let cell = collectionView.cellForItem(at: indexPath) as! SpecialsCell
+            popover.showPopover(product: cell.product)
+        case self.suggestionsCollectionView:
+            let cell = collectionView.cellForItem(at: indexPath) as! SuggestionsCell
+            popover.showPopover(product: cell.product)
+        default:
+            print("Error")
+        }
+    }
 }

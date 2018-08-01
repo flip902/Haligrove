@@ -186,7 +186,6 @@ class StrainsCell: FoldingCell, NSCacheDelegate {
     }
     
     private func createContainerView() -> UIView {
-        
         let containerView = UIView(frame: .zero)
         containerView.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
         containerView.translatesAutoresizingMaskIntoConstraints = false

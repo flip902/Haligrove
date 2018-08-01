@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import MessageUI
 
-class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CartViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
+    // MARK: - Class Properties
     var cartTableView: UITableView!
     let cartIdentifier = "cartIdentifier"
     
@@ -25,7 +27,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         label.font = Font(.installed(.bakersfieldBold), size: .custom(18.0)).instance
         label.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         label.textAlignment = .center
-        
         let imageSize = CGRect(x: 0, y: -5, width: 30, height: 30)
         let addToCartButtonImage = UIImage(named: "buy")
         let imageAttachment = NSTextAttachment()
@@ -71,6 +72,28 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         return label
     }()
     
+    // Number Formatter
+    lazy var itemPriceFormatter: NumberFormatter = {
+        let itemPriceFormatter = NumberFormatter()
+        itemPriceFormatter.numberStyle = .currency
+        itemPriceFormatter.locale = Locale.current
+        return itemPriceFormatter
+    }()
+    
+    // MARK: - View Methods
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupNavigationBar()
+        setupTableView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkEmptyStateOfCart()
+        animateTableView()
+        updateTotalCostsLabel()
+    }
+    
     // MARK: - Class Methods
     func setupNavigationBar() {
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -99,26 +122,20 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         totalCostsLabel.anchor(top: cartTableFooterView.topAnchor, right: cartTableFooterView.rightAnchor, bottom: cartTableFooterView.bottomAnchor, left: cartTableFooterView.leftAnchor, paddingTop: 8, paddingRight: 8, paddingBottom: 0, paddingLeft: 0, width: 0, height: 0)
     }
     
-    // Number Formatter
-    lazy var itemPriceFormatter: NumberFormatter = {
-        let itemPriceFormatter = NumberFormatter()
-        itemPriceFormatter.numberStyle = .currency
-        itemPriceFormatter.locale = Locale.current
-        return itemPriceFormatter
-    }()
-    
-    @objc func submitButtonPressed() {
-        // TODO: - Submit order to firebase and send order to email
-        print("submit button pressed")
+    func checkEmptyStateOfCart() {
+        setEmptyViewVisible(CartManager.instance.numberOfItemsInCart() == 0)
     }
     
-    @objc func clearAllButtonPressed() {
-        let alertView = UIAlertController(title: "Clear all?", message: "Do you really want to clear all items from your cart?", preferredStyle: .alert)
-        alertView.addAction(UIAlertAction(title: "No", style: .default, handler: nil))
-        alertView.addAction(UIAlertAction(title: "Clear", style: .destructive, handler: { (alertAction) -> Void in
-            self.clearCart()
-        }))
-        present(alertView, animated: true, completion: nil)
+    fileprivate func animateTableView() {
+        cartTableView.reloadWithAnimation()
+        cartTableFooterView.alpha = 0
+        UIView.animate(withDuration: 1.3) {
+            self.cartTableFooterView.alpha = 1
+        }
+    }
+    
+    func updateTotalCostsLabel() {
+        totalCostsLabel.text = "Total: \(itemPriceFormatter.string(from: NSNumber(value: CartManager.instance.totalPriceInCart())) ?? "")"
     }
     
     func clearCart() {
@@ -143,10 +160,21 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func updateTotalCostsLabel() {
-        totalCostsLabel.text = "Total: \(itemPriceFormatter.string(from: NSNumber(value: CartManager.instance.totalPriceInCart())) ?? "")"
+    // TODO: - Submit order to firebase and send order to email
+    @objc func submitButtonPressed() {
+        print("submit button pressed")
     }
     
+    @objc func clearAllButtonPressed() {
+        let alertView = UIAlertController(title: "Clear all?", message: "Do you really want to clear all items from your cart?", preferredStyle: .alert)
+        alertView.addAction(UIAlertAction(title: "No", style: .default, handler: nil))
+        alertView.addAction(UIAlertAction(title: "Clear", style: .destructive, handler: { (alertAction) -> Void in
+            self.clearCart()
+        }))
+        present(alertView, animated: true, completion: nil)
+    }
+    
+    // MARK: - tableView Methods
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return CartManager.instance.numberOfItemsInCart()
     }
@@ -164,10 +192,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
-    }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -209,27 +233,4 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 100
     }
-    
-    func checkEmptyStateOfCart() {
-        setEmptyViewVisible(CartManager.instance.numberOfItemsInCart() == 0)
-    }
-    
-    // MARK: - View Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupNavigationBar()
-        setupTableView()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkEmptyStateOfCart()
-        cartTableView.reloadWithAnimation()
-        cartTableFooterView.alpha = 0
-        UIView.animate(withDuration: 1.3) {
-            self.cartTableFooterView.alpha = 1
-        }
-        updateTotalCostsLabel()
-    }
-    
 }

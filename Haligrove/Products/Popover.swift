@@ -27,8 +27,8 @@ class Popover: NSObject, UITextFieldDelegate {
         let button = UIButton(type: .system)
         button.setTitle("Cancel", for: .normal)
         button.tintColor = #colorLiteral(red: 0.7163612247, green: 0.1086136475, blue: 0.1066852286, alpha: 1)
-        button.titleLabel?.font = Font(.installed(.bakersfieldBold), size:.custom(22)).instance
-        button.layer.cornerRadius = 5
+        button.titleLabel?.font = Font(.installed(.bakersfieldBold), size:.custom(28)).instance
+        button.layer.cornerRadius = 15
         button.layer.borderColor = #colorLiteral(red: 0.7163612247, green: 0.1086136475, blue: 0.1066852286, alpha: 1)
         button.layer.borderWidth = 2
         button.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
@@ -39,8 +39,8 @@ class Popover: NSObject, UITextFieldDelegate {
         let button = UIButton(type: .system)
         button.setTitle("Submit", for: .normal)
         button.tintColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
-        button.titleLabel?.font = Font(.installed(.bakersfieldBold), size:.custom(22)).instance
-        button.layer.cornerRadius = 5
+        button.titleLabel?.font = Font(.installed(.bakersfieldBold), size:.custom(28)).instance
+        button.layer.cornerRadius = 15
         button.layer.borderColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
         button.layer.borderWidth = 2
         button.addTarget(self, action: #selector(submitToCart), for: .touchUpInside)
@@ -49,8 +49,8 @@ class Popover: NSObject, UITextFieldDelegate {
     }()
     
     // MARK: - Object Methods
+    // TODO: - Refactor this Massive Method
     func showPopover(product: Product) {
-        // TODO: - Refactor this Massive Method
         submitButton.isEnabled = false
         self.product = product
         if let window = UIApplication.shared.keyWindow {
@@ -61,7 +61,7 @@ class Popover: NSObject, UITextFieldDelegate {
             
             popoverView.frame = CGRect(x: window.center.x - 150, y: window.frame.height, width: 300, height: 300)
             popoverView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
-            popoverView.layer.cornerRadius = 5
+            popoverView.layer.cornerRadius = 15
             popoverView.addGestureRecognizer(popoverViewDismissKeyboardTapGesture)
             
             howManyLabel.text = "How many grams of"
@@ -95,7 +95,7 @@ class Popover: NSObject, UITextFieldDelegate {
             popoverTextField.isUserInteractionEnabled = true
             popoverTextField.placeholder = "Qty" // "\(product.id ?? "")"
             popoverTextField.keyboardType = UIKeyboardType.numbersAndPunctuation
-            self.popoverTextField.delegate = self
+            popoverTextField.delegate = self
             popoverTextField.textAlignment = .center
             popoverTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: popoverTextField.frame.height))
             popoverTextField.leftViewMode = .always
@@ -103,7 +103,6 @@ class Popover: NSObject, UITextFieldDelegate {
             popoverTextField.rightViewMode = .always
             popoverTextField.adjustsFontSizeToFitWidth = true
             popoverTextField.addTarget(self, action: #selector(Popover.textFieldDidChange(_:)), for: UIControlEvents.editingChanged)
-            
             
             priceLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             priceLabel.textAlignment = .center
@@ -151,6 +150,7 @@ class Popover: NSObject, UITextFieldDelegate {
         }
     }
     
+    // TODO: - If product is on sale show sale price
     func calculatePrice(entry: String) -> Float {
         guard let pricePerOunce = product?.pricePerOunce else { return 0 }
         guard let intEntry = Int(entry) else { return 0}
@@ -186,12 +186,7 @@ class Popover: NSObject, UITextFieldDelegate {
         guard let name = product?.name else { return }
         guard let qty = popoverTextField.text else { return }
         let priceToPutInCart = calculatePrice(entry: qty)
-        
-        let cartItem = CartItem(id: 1, name: name, qty: Int(qty)!, price: priceToPutInCart)
-        
-        print("Added \(cartItem.qty) grams of \(cartItem.name) with a price of $\(cartItem.price) to Cart")
-        
-        // TODO: - Submit order to Cart
+        let cartItem = CartItem(id: 1, name: name, qty: Int(qty)!, price: priceToPutInCart, imageUrl: nil, description: nil)
         CartManager.instance.addItem(item: cartItem)
         animatePopoverIntoCart()
     }
@@ -213,7 +208,6 @@ class Popover: NSObject, UITextFieldDelegate {
                 self.popoverView.transform = CGAffineTransform(scaleX: 1, y: 1)
                 self.popoverView.frame = CGRect(x: window.center.x - 150, y: window.frame.height, width: (300), height: (300))
             }
-            
             let badgeValue = CartManager.instance.numberOfItemsInCart()
             UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeColor = #colorLiteral(red: 0.2745098174, green: 0.4862745106, blue: 0.1411764771, alpha: 1)
             UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = String(badgeValue)
@@ -228,24 +222,6 @@ class Popover: NSObject, UITextFieldDelegate {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: NSNotification.Name.UIKeyboardWillHide
             , object: nil)
-    }
-    
-    @objc func keyboardWillAppear(_ notification: NSNotification) {
-        if ((notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
-            self.popoverView.frame.origin.y -= (100)
-        }
-    }
-    
-    @objc func keyboardWillDisappear(_ notification: NSNotification) {
-        if ((notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
-            self.popoverView.frame.origin.y += (100)
-            popoverTextField.isUserInteractionEnabled = true
-            
-        }
-    }
-    
-    @objc func hideKeyboard() {
-        popoverView.endEditing(true)
     }
     
     // MARK: - textField Delegate Methods
@@ -269,7 +245,6 @@ class Popover: NSObject, UITextFieldDelegate {
     }
     
     @objc func textFieldDidChange(_ textField: UITextField) {
-        
         guard let text = textField.text else { return }
         priceLabel.text = "Price: $\(Int(calculatePrice(entry: text)))"
         let isValid = text.count > 0
@@ -278,6 +253,23 @@ class Popover: NSObject, UITextFieldDelegate {
         } else {
             submitButton.isEnabled = false
         }
+    }
+    
+    @objc func keyboardWillAppear(_ notification: NSNotification) {
+        if ((notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+            self.popoverView.frame.origin.y -= (100)
+        }
+    }
+    
+    @objc func keyboardWillDisappear(_ notification: NSNotification) {
+        if ((notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue) != nil {
+            self.popoverView.frame.origin.y += (100)
+            popoverTextField.isUserInteractionEnabled = true
+        }
+    }
+    
+    @objc func hideKeyboard() {
+        popoverView.endEditing(true)
     }
 }
 
