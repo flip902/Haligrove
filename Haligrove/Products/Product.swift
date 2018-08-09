@@ -14,6 +14,22 @@ enum StrainType: String {
     case hybrid = "Hybrid"
 }
 
+// TODO: - Put inside own file in Sales folder
+class Sales: Decodable {
+    var qty: Int?
+    var price: Float?
+    
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(qty ?? "", forKey: "qty")
+        aCoder.encode(price ?? 0, forKey: "price")
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        self.qty = aDecoder.decodeObject(forKey: "qty") as? Int
+        self.price = aDecoder.decodeObject(forKey: "price") as? Float
+    }
+}
+
 class Product: NSObject, Decodable, NSCoding {
     
     func encode(with aCoder: NSCoder) {
@@ -26,6 +42,7 @@ class Product: NSObject, Decodable, NSCoding {
         aCoder.encode(salePricePerGram ?? "", forKey: "salePricePerGram")
         aCoder.encode(salePriceForFive ?? "", forKey: "salePriceForFive")
         aCoder.encode(salePricePerOunce ?? "", forKey: "salePricePerOunce")
+        aCoder.encode(sales, forKey: "sales")
         aCoder.encode(productDescription ?? "", forKey: "description")
         aCoder.encode(isFavorite ?? "", forKey: "favorite")
     }
@@ -40,6 +57,7 @@ class Product: NSObject, Decodable, NSCoding {
         self.salePricePerGram = aDecoder.decodeObject(forKey: "salePricePerGram") as? Float
         self.salePriceForFive = aDecoder.decodeObject(forKey: "salePriceForFive") as? Float
         self.salePricePerOunce = aDecoder.decodeObject(forKey: "salePricePerOunce") as? Float
+        self.sales = aDecoder.decodeObject(forKey: "sales") as? [Sales]
         self.productDescription = aDecoder.decodeObject(forKey: "description") as? String
         self.isFavorite = aDecoder.decodeObject(forKey: "favorite") as? Bool
     }
@@ -57,6 +75,7 @@ class Product: NSObject, Decodable, NSCoding {
     var salePricePerGram: Float?
     var salePriceForFive: Float?
     var salePricePerOunce: Float?
+    var sales: [Sales]?
     var productDescription: String?
     var inventory: String?
     var THC: Int?

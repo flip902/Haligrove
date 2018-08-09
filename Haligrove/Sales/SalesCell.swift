@@ -10,6 +10,8 @@ import UIKit
 
 class SalesCell: UICollectionViewCell {
     
+    weak var salesPopoverDelegate: PopoverDelegate?
+    
     lazy var saleImage = CustomCacheImageView()
     lazy var saleTitle = UILabel()
     lazy var saleDescriptionLabel = UILabel()
@@ -44,7 +46,7 @@ class SalesCell: UICollectionViewCell {
         saleTitle.adjustsFontSizeToFitWidth = true
         saleTitle.textColor = #colorLiteral(red: 0.6196078431, green: 0.3529411765, blue: 0.8352941176, alpha: 1)
         
-        saleDescriptionLabel.text = salesItem.description
+        saleDescriptionLabel.text = salesItem.productDescription
         saleDescriptionLabel.numberOfLines = 0
         saleDescriptionLabel.font = Font(.installed(.bakersfieldBold), size: .custom(18)).instance
         saleDescriptionLabel.textColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
@@ -57,7 +59,5 @@ class SalesCell: UICollectionViewCell {
         saleTitle.anchor(top: topAnchor, right: safeAreaLayoutGuide.rightAnchor, bottom: nil, left: saleImage.safeAreaLayoutGuide.rightAnchor, paddingTop: 8, paddingRight: 4, paddingBottom: 0, paddingLeft: 4, width: 0, height: 0)
         addSubview(saleDescriptionLabel)
         saleDescriptionLabel.anchor(top: saleTitle.topAnchor, right: safeAreaLayoutGuide.rightAnchor, bottom: bottomAnchor, left: saleImage.rightAnchor, paddingTop: 0, paddingRight: 8, paddingBottom: 8, paddingLeft: 8, width: 0, height: 0)
-        
-        
     }
 }

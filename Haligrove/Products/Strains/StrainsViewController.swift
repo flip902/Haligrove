@@ -235,7 +235,7 @@ class StrainsViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     // Popover.swift
-    let popover = Popover()
+    let popover = Popover.shared
     // MARK: Delegation Methods
     func didHandlePopover(product: Product) {
         popover.showPopover(product: product)

@@ -11,8 +11,6 @@ import Foundation
 extension UserDefaults {
     
     static let favoriteKey = "favoriteKey"
-    // TODO: - Save product to cart using UserDefaults
-    static let cartItemKey = "cartItemKey"
     
     func savedProducts(for key: String) -> [Product] {
         guard let favoriteData = UserDefaults.standard.data(forKey: key) else { return [] }

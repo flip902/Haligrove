@@ -109,7 +109,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         cartTableView.tableFooterView = cartTableFooterView
         cartTableView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         cartTableView?.register(CartCell.self, forCellReuseIdentifier: cartIdentifier)
-        cartTableView.rowHeight = 100
         cartTableView?.delegate = self
         cartTableView?.dataSource = self
         view.addSubview(cartTableView)
@@ -201,6 +200,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             if successful == true {
                 tableView.beginUpdates()
                 tableView.deleteRows(at: [indexPath], with: .right)
+                tableView.reloadData()
                 tableView.endUpdates()
                 if CartManager.instance.numberOfItemsInCart() == 0 {
                     UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = nil
@@ -209,6 +209,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
                 }
             }
             checkEmptyStateOfCart()
+            updateTotalCostsLabel()
         }
     }
     
@@ -221,16 +222,7 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
         return [deleteButton]
     }
     
-    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
-        updateTotalCostsLabel()
-        tableView.reloadData()
-    }
-    
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return cartTableFooterView
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 100
     }
 }

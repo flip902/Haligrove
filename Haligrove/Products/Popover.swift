@@ -10,13 +10,15 @@ import UIKit
 
 class Popover: NSObject, UITextFieldDelegate {
     
+    static var shared = Popover()
+    
     // MARK: - Properties
     let fadeView = UIView()
-    var popoverView: UIView = UIView()
-    let productNameLabel = UILabel()
-    let howManyLabel = UILabel()
-    let likeToOrderLabel = UILabel()
-    let popoverTextField = UITextField()
+    var popoverView = UIView()
+    var productNameLabel = UILabel()
+    var howManyLabel = UILabel()
+    var likeToOrderLabel = UILabel()
+    var popoverTextField = UITextField()
     var priceLabel = UILabel()
     var product: Product?
     

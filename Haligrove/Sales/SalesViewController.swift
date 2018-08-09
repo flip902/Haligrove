@@ -10,14 +10,13 @@ import UIKit
 
 private let reuseIdentifier = "salesCell"
 
-class SalesViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class SalesViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout, PopoverDelegate {
     
     var salesItems = [Product]()
     private let urlString = "http://app.haligrove.com/sales.json"
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.collectionView!.register(SalesCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         setupNavBar()
     }
@@ -36,7 +35,7 @@ class SalesViewController: UICollectionViewController, UICollectionViewDelegateF
         navigationController?.navigationBar.tintColor = .gray
         navigationController?.navigationBar.barStyle = .black
     }
-
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return salesItems.count
     }
@@ -46,6 +45,7 @@ class SalesViewController: UICollectionViewController, UICollectionViewDelegateF
         
         let salesItem = salesItems[indexPath.row]
         cell.setupCell(salesItem: salesItem)
+        cell.salesPopoverDelegate = self
         
         return cell
     }
@@ -54,6 +54,16 @@ class SalesViewController: UICollectionViewController, UICollectionViewDelegateF
         let width = (self.view.frame.width)
         let height = (width / 2)
         return CGSize(width: width, height: height)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let product = salesItems[indexPath.row]
+        didHandlePopover(product: product)
+    }
+    
+    let salesPopover = SalesPopover.instance
+    func didHandlePopover(product: Product) {
+        salesPopover.showPopover(product: product)
     }
 
 }

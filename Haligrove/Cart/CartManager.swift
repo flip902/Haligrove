@@ -10,8 +10,6 @@ import Foundation
 
 class CartManager: NSObject {
     
-    // TODO: - Add badgeValue property to set the number to display on badgeAlert
-    
     private var itemsArray: [CartItem] = []
     
     static let instance: CartManager = {
