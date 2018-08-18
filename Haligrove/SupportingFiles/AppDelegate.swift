@@ -37,6 +37,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let cancelButtonAttributes: NSDictionary = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1), NSAttributedStringKey.font: Font(.installed(.bakersfieldBold), size: .custom(18)).instance]
         UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes as? [NSAttributedStringKey : AnyObject], for: UIControlState.normal)
         
+        // Disabled text
+        let disabledButtonAttributes = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1),
+                                        NSAttributedStringKey.font: Font(.installed(.bakersfieldLight), size: .custom(16)).instance] as [NSAttributedStringKey : Any]
+        UIBarButtonItem.appearance().setTitleTextAttributes(disabledButtonAttributes, for: .disabled)
+        
         // Selected text
         let titleTextAttributesSelected = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1), NSAttributedStringKey.font: Font(.installed(.bakersfieldBold), size: .custom(16)).instance] as [NSAttributedStringKey : Any]
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesSelected, for: .selected)

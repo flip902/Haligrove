@@ -78,4 +78,9 @@ class RadioButton: UIButton {
         isOn = !isOn
         self.setNeedsDisplay()
     }
+    
+    func toggle() {
+        isOn = !isOn
+        self.setNeedsDisplay()
+    }
 }

@@ -89,3 +89,16 @@ class Product: NSObject, Decodable, NSCoding {
     var isFavorite: Bool?
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+

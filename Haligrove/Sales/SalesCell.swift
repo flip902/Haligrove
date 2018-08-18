@@ -15,6 +15,7 @@ class SalesCell: UICollectionViewCell {
     lazy var saleImage = CustomCacheImageView()
     lazy var saleTitle = UILabel()
     lazy var saleDescriptionLabel = UILabel()
+    var label: UILabel?
     
     
     override init(frame: CGRect) {

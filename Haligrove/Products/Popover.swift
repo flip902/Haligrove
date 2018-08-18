@@ -29,6 +29,7 @@ class Popover: NSObject, UITextFieldDelegate {
         let button = UIButton(type: .system)
         button.setTitle("Cancel", for: .normal)
         button.tintColor = #colorLiteral(red: 0.7163612247, green: 0.1086136475, blue: 0.1066852286, alpha: 1)
+        button.setTitleColor(#colorLiteral(red: 0.7163612247, green: 0.1086136475, blue: 0.1066852286, alpha: 1), for: .normal)
         button.titleLabel?.font = Font(.installed(.bakersfieldBold), size:.custom(28)).instance
         button.layer.cornerRadius = 15
         button.layer.borderColor = #colorLiteral(red: 0.7163612247, green: 0.1086136475, blue: 0.1066852286, alpha: 1)
@@ -221,9 +222,10 @@ class Popover: NSObject, UITextFieldDelegate {
         super.init()
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillAppear), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear), name: NSNotification.Name.UIKeyboardWillHide
             , object: nil)
+       
     }
     
     // MARK: - textField Delegate Methods

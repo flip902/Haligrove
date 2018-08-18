@@ -8,15 +8,17 @@
 
 import UIKit
 
-class SalesPopover: NSObject {
+class SalesPopover: NSObject, UITableViewDelegate, UITableViewDataSource {
     
     static var instance = SalesPopover()
     
     // MARK: - Properties
+    var salesPopoverTableView: UITableView!
     let fadeView = UIView()
     lazy var popoverView = UIView()
     lazy var pickItemsLabel = UILabel()
-    lazy var radioButton = RadioButton(type: .system)
+    let popoverCellId = "popoverCellId"
+    
     var product: Product?
     
     lazy var cancelButton: UIButton = {
@@ -48,6 +50,7 @@ class SalesPopover: NSObject {
     
     override init() {
         super.init()
+        setupTableView()
     }
     
     func showPopover(product: Product) {
@@ -62,6 +65,8 @@ class SalesPopover: NSObject {
             popoverView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
             popoverView.layer.cornerRadius = 15
             
+            
+            
             pickItemsLabel.text = "Which sale would you like to add to cart?"
             pickItemsLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             pickItemsLabel.textAlignment = .center
@@ -71,15 +76,14 @@ class SalesPopover: NSObject {
             window.addSubview(fadeView)
             window.addSubview(popoverView)
             popoverView.addSubview(pickItemsLabel)
-            
+            popoverView.addSubview(salesPopoverTableView)
             popoverView.addSubview(cancelButton)
             popoverView.addSubview(submitButton)
-            popoverView.addSubview(radioButton)
             
             cancelButton.anchor(top: nil, right: nil, bottom: popoverView.bottomAnchor, left: popoverView.leftAnchor, paddingTop: 0, paddingRight: 0, paddingBottom: 16, paddingLeft: 16, width: (popoverView.frame.width / 2) - 48, height: 0)
             submitButton.anchor(top: nil, right: popoverView.rightAnchor, bottom: popoverView.bottomAnchor, left: nil, paddingTop: 0, paddingRight: 16, paddingBottom: 16, paddingLeft: 0, width: (popoverView.frame.width / 2) - 48, height: 0)
             pickItemsLabel.anchor(top: popoverView.safeAreaLayoutGuide.topAnchor, right: popoverView.safeAreaLayoutGuide.rightAnchor, bottom: nil, left: popoverView.safeAreaLayoutGuide.leftAnchor, paddingTop: 8, paddingRight: 8, paddingBottom: 0, paddingLeft: 8, width: 0, height: 0)
-            radioButton.anchor(top: pickItemsLabel.bottomAnchor, right: nil, bottom: nil, left: popoverView.leftAnchor, paddingTop: 16, paddingRight: 0, paddingBottom: 0, paddingLeft: 16, width: 0, height: 0)
+            salesPopoverTableView.anchor(top: pickItemsLabel.safeAreaLayoutGuide.bottomAnchor, right: popoverView.safeAreaLayoutGuide.rightAnchor, bottom: cancelButton.topAnchor, left: popoverView.safeAreaLayoutGuide.leftAnchor, paddingTop: 6, paddingRight: 8, paddingBottom: 6, paddingLeft: 8, width: 0, height: 0)
             
             UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0.2, options: [.curveEaseOut], animations: {
                 self.fadeView.alpha = 1
@@ -88,6 +92,19 @@ class SalesPopover: NSObject {
         }
     }
     
+    func setupTableView() {
+        salesPopoverTableView = UITableView()
+        salesPopoverTableView.register(PopoverCell.self, forCellReuseIdentifier: popoverCellId)
+        salesPopoverTableView.delegate = self
+        salesPopoverTableView.dataSource = self
+        salesPopoverTableView.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        salesPopoverTableView.tableFooterView = UIView()
+        salesPopoverTableView.separatorStyle = .none
+        salesPopoverTableView.isScrollEnabled = false
+        
+    }
+    
+    // TODO: - submit to cart
     @objc func submitToCart() {
         
     }
@@ -101,7 +118,48 @@ class SalesPopover: NSObject {
         }) { (_) in
             self.popoverView.removeFromSuperview()
             self.fadeView.removeFromSuperview()
+            self.salesPopoverTableView.reloadData()
         }
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let salesCount = product?.sales?.count else { return 0 }
+        return salesCount
+    }
+    
+    // TODO: - Add sales to sales.json file
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = salesPopoverTableView.dequeueReusableCell(withIdentifier: popoverCellId, for: indexPath) as! PopoverCell
+        
+        cell.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        let radioButton = RadioButton(type: .system)
+        let salesLabel = UILabel()
+        let stackView = UIStackView(arrangedSubviews: [radioButton, salesLabel])
+        radioButton.size = CGSize(width: 30, height: 30)
+        cell.radioButton = radioButton
+        stackView.axis = .horizontal
+        stackView.distribution = .fillProportionally
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        cell.addSubview(stackView)
+        salesLabel.font = Font(.installed(.bakersfieldBold), size: .custom(22)).instance
+        salesLabel.textAlignment = .center
+        stackView.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+        stackView.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+        cell.selectionStyle = .none
+        guard let sales = product?.sales?[indexPath.row] else { return cell }
+        salesLabel.text = "\(sales.qty ?? 0) for $\(sales.price ?? 0)"
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let currentCell = tableView.cellForRow(at: indexPath) as? PopoverCell
+        currentCell?.radioButton?.toggle()
+        
     }
     
 }

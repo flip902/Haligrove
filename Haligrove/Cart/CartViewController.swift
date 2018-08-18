@@ -200,7 +200,6 @@ class CartViewController: UIViewController, UITableViewDelegate, UITableViewData
             if successful == true {
                 tableView.beginUpdates()
                 tableView.deleteRows(at: [indexPath], with: .right)
-                tableView.reloadData()
                 tableView.endUpdates()
                 if CartManager.instance.numberOfItemsInCart() == 0 {
                     UIApplication.mainTabBarController()?.viewControllers?[4].tabBarItem.badgeValue = nil
