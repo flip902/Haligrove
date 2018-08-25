@@ -10,7 +10,7 @@ import UIKit
 
 class PopoverCell: UITableViewCell {
     
-    var radioButton: RadioButton?
+//    var radioButton: RadioButton?
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

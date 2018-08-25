@@ -12,6 +12,7 @@ class SalesPopover: NSObject, UITableViewDelegate, UITableViewDataSource {
     
     static var instance = SalesPopover()
     
+    
     // MARK: - Properties
     var salesPopoverTableView: UITableView!
     let fadeView = UIView()
@@ -118,6 +119,7 @@ class SalesPopover: NSObject, UITableViewDelegate, UITableViewDataSource {
         }) { (_) in
             self.popoverView.removeFromSuperview()
             self.fadeView.removeFromSuperview()
+            self.salesPopoverTableView.removeFromSuperview()
             self.salesPopoverTableView.reloadData()
         }
     }
@@ -128,15 +130,14 @@ class SalesPopover: NSObject, UITableViewDelegate, UITableViewDataSource {
     }
     
     // TODO: - Add sales to sales.json file
+    // TODO: - Move most of this code to the PopoverCell and fix the radio button bug
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = salesPopoverTableView.dequeueReusableCell(withIdentifier: popoverCellId, for: indexPath) as! PopoverCell
-        
         cell.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         let radioButton = RadioButton(type: .system)
         let salesLabel = UILabel()
         let stackView = UIStackView(arrangedSubviews: [radioButton, salesLabel])
         radioButton.size = CGSize(width: 30, height: 30)
-        cell.radioButton = radioButton
         stackView.axis = .horizontal
         stackView.distribution = .fillProportionally
         stackView.spacing = 16
@@ -157,8 +158,8 @@ class SalesPopover: NSObject, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let currentCell = tableView.cellForRow(at: indexPath) as? PopoverCell
-        currentCell?.radioButton?.toggle()
+        //let currentCell = tableView.cellForRow(at: indexPath) as? PopoverCell
+        //currentCell?.radioButton?.toggle()
         
     }
     
