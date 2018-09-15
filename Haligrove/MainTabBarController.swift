@@ -41,7 +41,7 @@ class MainTabBarController: UITabBarController {
         let productsNavController = templateController(for: ProductsTableViewController(), title: "Products", image: #imageLiteral(resourceName: "strains"))
         
         // Info
-        let infoNavController = templateController(title: "Info", image: #imageLiteral(resourceName: "about"))
+        let infoNavController = templateController(for: MessageTableViewController(), title: "Message", image: #imageLiteral(resourceName: "about"))
         
         // Sales
         let salesNavController = templateController(for: SalesViewController(collectionViewLayout: UICollectionViewFlowLayout()), title: "Sales", image: #imageLiteral(resourceName: "money"))

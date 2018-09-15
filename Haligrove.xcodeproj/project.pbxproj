@@ -15,6 +15,8 @@
 		1105446B21095F1800E1816B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1105446A21095F1800E1816B /* GoogleService-Info.plist */; };
 		1128EA452123898A00559A37 /* Bakersfield Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1128EA442123898900559A37 /* Bakersfield Light.ttf */; };
 		1128EA47212389BC00559A37 /* Bakersfield Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1128EA46212389BC00559A37 /* Bakersfield Bold.ttf */; };
+		1135023B214B651000CD331D /* MessageTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1135023A214B651000CD331D /* MessageTableViewController.swift */; };
+		1135023D214B73A400CD331D /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1135023C214B73A400CD331D /* MessageCell.swift */; };
 		113EEEF1210F72C800D48D84 /* SalesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113EEEF0210F72C800D48D84 /* SalesViewController.swift */; };
 		113EEEF3210F733B00D48D84 /* SalesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113EEEF2210F733B00D48D84 /* SalesCell.swift */; };
 		114ADD9D211BC0F000C4FDE4 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114ADD9C211BC0F000C4FDE4 /* RadioButton.swift */; };
@@ -71,6 +73,8 @@
 		1105446A21095F1800E1816B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1128EA442123898900559A37 /* Bakersfield Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Bakersfield Light.ttf"; sourceTree = "<group>"; };
 		1128EA46212389BC00559A37 /* Bakersfield Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Bakersfield Bold.ttf"; sourceTree = "<group>"; };
+		1135023A214B651000CD331D /* MessageTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTableViewController.swift; sourceTree = "<group>"; };
+		1135023C214B73A400CD331D /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		113EEEF0210F72C800D48D84 /* SalesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesViewController.swift; sourceTree = "<group>"; };
 		113EEEF2210F733B00D48D84 /* SalesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesCell.swift; sourceTree = "<group>"; };
 		114ADD9C211BC0F000C4FDE4 /* RadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButton.swift; sourceTree = "<group>"; };
@@ -157,6 +161,7 @@
 				1105446421095E6500E1816B /* Login */,
 				1105446321095E5C00E1816B /* Home */,
 				1105446621095E8300E1816B /* Products */,
+				11350239214B647F00CD331D /* Chat */,
 				113EEEEF210F728800D48D84 /* Sales */,
 				1105446221095E5200E1816B /* Cart */,
 				1105446521095E7500E1816B /* NetworkLayer */,
@@ -254,6 +259,15 @@
 				114ADD9C211BC0F000C4FDE4 /* RadioButton.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		11350239214B647F00CD331D /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				1135023A214B651000CD331D /* MessageTableViewController.swift */,
+				1135023C214B73A400CD331D /* MessageCell.swift */,
+			);
+			path = Chat;
 			sourceTree = "<group>";
 		};
 		113EEEEF210F728800D48D84 /* Sales */ = {
@@ -363,6 +377,7 @@
 				TargetAttributes = {
 					1105444B2109595A00E1816B = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -458,6 +473,7 @@
 			files = (
 				118EADC0210976F600B28C0E /* StrainsCell.swift in Sources */,
 				114ADD9D211BC0F000C4FDE4 /* RadioButton.swift in Sources */,
+				1135023B214B651000CD331D /* MessageTableViewController.swift in Sources */,
 				118EADC8210977C800B28C0E /* ExtractsViewController.swift in Sources */,
 				118EADB5210975DF00B28C0E /* ProductsCell.swift in Sources */,
 				113EEEF1210F72C800D48D84 /* SalesViewController.swift in Sources */,
@@ -468,6 +484,7 @@
 				118632322113985A00E88F20 /* SalesPopover.swift in Sources */,
 				118EADE821097D8700B28C0E /* MainTabBar+Extension.swift in Sources */,
 				118EADDC21097B7900B28C0E /* CartItem.swift in Sources */,
+				1135023D214B73A400CD331D /* MessageCell.swift in Sources */,
 				118EADA9210974AD00B28C0E /* HomeViewController.swift in Sources */,
 				118EADD621097AC100B28C0E /* CartViewController.swift in Sources */,
 				1105446921095EE100E1816B /* MainTabBarController.swift in Sources */,
@@ -651,7 +668,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.haligrove.Haligrove;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -670,7 +687,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.haligrove.Haligrove;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
